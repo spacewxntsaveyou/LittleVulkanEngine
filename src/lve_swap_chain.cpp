@@ -11,8 +11,7 @@
 
 namespace lve {
 
-LveSwapChain::LveSwapChain(LveDevice &deviceRef, VkExtent2D extent)
-    : device{deviceRef}, windowExtent{extent} {
+LveSwapChain::LveSwapChain(LveDevice &deviceRef, VkExtent2D extent) : device{deviceRef}, windowExtent{extent} {
   createSwapChain();
   createImageViews();
   createRenderPass();

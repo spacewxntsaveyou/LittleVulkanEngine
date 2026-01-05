@@ -3,6 +3,11 @@
 #include"lve_window.h"
 #include"lve_pipeline.h"
 #include"lve_device.h"
+#include"lve_swap_chain.h"
+
+//std
+#include<memory>
+#include <vector>
 
 namespace lve {
 
@@ -16,9 +21,13 @@ namespace lve {
 		void run();
 
 	private:
+			//Remember that variables are initialized from Top-Bottom and destroyed Bottom-Top
 		LveWindow lveWindow{ WIDTH, HEIGHT, "Le Vulkan"};
 		LveDevice lveDevice{ lveWindow };
-		LvePipeline lvePipeline{lveDevice, "shaders/simple_shader.vert.spv", "shaders/simple_shader.frag.spv", LvePipeline::defaultPipelineConfigInfo(WIDTH, HEIGHT)};
+		LveSwapChain lveSwapChain{ lveDevice, lveWindow.getExtent()};
+		std::unique_ptr<LvePipeline> lvePipeline;	
+		VkPipelineLayout pipelineLayout;
+		std::vector<VkCommandBuffer> commandBuffers;
 
 
 	};
