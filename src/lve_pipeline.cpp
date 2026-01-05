@@ -4,13 +4,22 @@
 #include <fstream>
 #include <stdexcept>
 #include <iostream>
+#include <cassert>
 
 namespace lve {
-
+	//Constructer
 	LvePipeline::LvePipeline(LveDevice& device, const std::string& vertFilepath, const std::string& fragFilepath, const PipelineConfigInfo& configInfo) :lveDevice{device} {
 
 		createGraphicsPipeline(vertFilepath, fragFilepath, configInfo);
 
+	}
+	//Destructer
+	LvePipeline::~LvePipeline() {
+		//Shaders
+		vkDestroyShaderModule(lveDevice.device(), vertShaderModule, nullptr);
+		vkDestroyShaderModule(lveDevice.device(), fragShaderModule, nullptr);
+		//Pipeline
+		vkDestroyPipeline(lveDevice.device(), graphicsPipeline, nullptr);
 	}
 
 	//readfile function
@@ -34,11 +43,70 @@ namespace lve {
 
 	void LvePipeline::createGraphicsPipeline(const std::string& vertFilepath, const std::string& fragFilepath, const PipelineConfigInfo& configInfo) {
 
+		assert(configInfo.pipelineLayout != VK_NULL_HANDLE && "Cannot create graphics pipeline : no pipelineLayout provided in configInfo");
+		assert(configInfo.renderPass != VK_NULL_HANDLE && "Cannot create graphics pipeline : no renderpass provided in configInfo");
+
 		auto vertCode = readFile(vertFilepath);
 		auto fragCode = readFile(fragFilepath);
 
-		std::cout << "Vertex Shader Code Size: " << vertCode.size() << '\n';
-		std::cout << "Fragment Shader Code Size: " << fragCode.size() << '\n';
+		createShaderModule(vertCode, &vertShaderModule);
+		createShaderModule(fragCode, &fragShaderModule);
+
+		VkPipelineShaderStageCreateInfo shaderStages[2];
+		//Vertex shader
+		shaderStages[0].sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
+		shaderStages[0].stage = VK_SHADER_STAGE_VERTEX_BIT;
+		shaderStages[0].module = vertShaderModule;
+		shaderStages[0].pName = "main";
+		shaderStages[0].flags = 0;
+		shaderStages[0].pNext = nullptr;
+		shaderStages[0].pSpecializationInfo = nullptr; //Mechanism to specialize shader functionality
+
+		//Fragment shader
+		shaderStages[1].sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
+		shaderStages[1].stage = VK_SHADER_STAGE_FRAGMENT_BIT;
+		shaderStages[1].module = fragShaderModule;
+		shaderStages[1].pName = "main";
+		shaderStages[1].flags = 0;
+		shaderStages[1].pNext = nullptr;
+		shaderStages[1].pSpecializationInfo = nullptr; //Mechanism to specialize shader functionality
+
+		VkPipelineVertexInputStateCreateInfo vertexInputInfo{}; //struct explains how to interpret Vertex buffer data	//Initial input in graphics pipeline
+		vertexInputInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO;
+		vertexInputInfo.vertexAttributeDescriptionCount = 0;
+		vertexInputInfo.vertexBindingDescriptionCount = 0;
+		vertexInputInfo.pVertexAttributeDescriptions = nullptr;
+		vertexInputInfo.pVertexBindingDescriptions = nullptr;
+
+		VkGraphicsPipelineCreateInfo pipelineInfo{};
+
+		//Uses the configs to create the graphicsPipeline object
+		pipelineInfo.sType = VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO;
+		pipelineInfo.stageCount = 2;	//Describes how many programmable stages the pipeline uses
+		pipelineInfo.pStages = shaderStages;
+
+		//Connect "pipelineCreateInfo" to "configInfo"	//Config is seperated from pipelineCreation
+		pipelineInfo.pVertexInputState = &vertexInputInfo;
+		pipelineInfo.pInputAssemblyState = &configInfo.inputAssemblyInfo;
+		pipelineInfo.pViewportState = &configInfo.viewportInfo;
+		pipelineInfo.pRasterizationState = &configInfo.rasterizationInfo;
+		pipelineInfo.pMultisampleState = &configInfo.multisampleInfo;
+		pipelineInfo.pColorBlendState = &configInfo.colorBlendInfo;
+		pipelineInfo.pDepthStencilState = &configInfo.depthStencilInfo;
+		pipelineInfo.pDynamicState = nullptr;	//Optional setting used to config some pipeline functionality	//"lineWidth", or dynamic viewport without pipeline recreation
+
+		//Adding indexes to createInfo
+		pipelineInfo.layout = configInfo.pipelineLayout;
+		pipelineInfo.renderPass = configInfo.renderPass;
+		pipelineInfo.subpass = configInfo.subpass;
+
+		//Useful for performance	//Creates a new graphics pipeline from an existing one
+		pipelineInfo.basePipelineIndex = -1;
+		pipelineInfo.basePipelineHandle = VK_NULL_HANDLE;
+
+		if (vkCreateGraphicsPipelines(lveDevice.device(), VK_NULL_HANDLE, 1, & pipelineInfo, nullptr, &graphicsPipeline) != VK_SUCCESS) {
+			throw std::runtime_error("failed to create graphics pipeline");
+		}
 
 	}
 
