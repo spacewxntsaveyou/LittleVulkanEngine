@@ -31,7 +31,7 @@ namespace lve {
 		void createPipelineLayout();
 		void createPipeline();
 		void createCommandBuffers();
-		void drawDrame();
+		void drawFrame();
 
 			//Remember that variables are initialized from Top-Bottom and destroyed Bottom-Top
 		LveWindow lveWindow{ WIDTH, HEIGHT, "Le Vulkan"};
