@@ -2,6 +2,15 @@
 
 #include"lve_device.h"
 
+//lib
+#define GLM_FORCE_RADIANS
+#define GLM_FORCE_DEPTH_ZERO_TO_ONE		//Uses correct orientation for vulkan (-1 -> 1)
+#include <glm/glm.hpp>
+
+//std
+#include <vector>
+
+
 namespace lve {
 
 	//Class takes vertex data created/read on cpu, then copies/allocate to gpu
@@ -9,7 +18,16 @@ namespace lve {
 
 	public:
 
-		LveModel();
+		struct Vertex {
+
+			glm::vec2 position;
+
+			static std::vector<VkVertexInputBindingDescription> getBindingDescriptions();
+			static std::vector<VkVertexInputAttributeDescription> getAttributeDescriptions();
+
+		};
+
+		LveModel(LveDevice &device, const std::vector<Vertex>& vertices);
 		~LveModel();
 
 		LveModel(const LveModel&) = delete;
@@ -19,6 +37,8 @@ namespace lve {
 		void draw(VkCommandBuffer commandBuffer);
 
 	private:
+
+		void createVertexBuffers(const std::vector<Vertex>& vertices);
 
 		LveDevice& lveDevice;
 		VkBuffer vertexBuffer;
