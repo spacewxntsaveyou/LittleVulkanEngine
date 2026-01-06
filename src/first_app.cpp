@@ -2,6 +2,7 @@
 
 //std
 #include <stdexcept>
+#include <array>
 
 namespace lve {
 
@@ -48,8 +49,42 @@ namespace lve {
 
 	}
 
-	void FirstApp::createCommandBuffers() {};
+	void FirstApp::createCommandBuffers() {
 	
-	void FirstApp::drawDrame() {};
+		commandBuffers.resize(lveSwapChain.imageCount());
+
+		VkCommandBufferAllocateInfo allocInfo{};
+		allocInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
+		allocInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
+		allocInfo.commandPool = lveDevice.getCommandPool();
+		allocInfo.commandBufferCount = static_cast<uint32_t>(commandBuffers.size());
+		
+		if (vkAllocateCommandBuffers(lveDevice.device(), &allocInfo, commandBuffers.data()) != VK_SUCCESS) {
+			throw std::runtime_error("failed to allocate command buffers");
+		}
+
+		for (int i = 0; i < commandBuffers.size(); i++) {
+
+			VkCommandBufferBeginInfo beginInfo{};
+			beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
+
+			if (vkBeginCommandBuffer(commandBuffers[i], &beginInfo) != VK_SUCCESS) {
+				throw std::runtime_error("failed to begin recording command buffers!");
+			}
+
+			VkRenderPassBeginInfo renderPassInfo{};
+			renderPassInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
+			renderPassInfo.renderPass = lveSwapChain.getRenderPass();
+			renderPassInfo.framebuffer = lveSwapChain.getFrameBuffer(i);
+
+			//Defines area where the shader loads/stores
+			renderPassInfo.renderArea.offset = { 0, 0 };
+			renderPassInfo.renderArea.extent = lveSwapChain.getSwapChainExtent();
+
+		}
+
+	}
+	
+	void FirstApp::drawDrame() {}
 
 } //namespace lve
