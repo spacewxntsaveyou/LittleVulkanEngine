@@ -25,7 +25,7 @@ namespace lve {
 			drawFrame();
 
 		};
-
+		vkDeviceWaitIdle(lveDevice.device());	//CPU will block until GPU operations have completed	//Avoids console spam at termination
 	}
 
 	void FirstApp::createPipelineLayout() {
