@@ -44,4 +44,25 @@ namespace lve {
 
 	}
 
+	std::vector<VkVertexInputBindingDescription> LveModel::Vertex::getBindingDescriptions() {
+
+		std::vector<VkVertexInputBindingDescription> bindingDescriptions(1);
+		bindingDescriptions[0].binding = 0;
+		bindingDescriptions[0].stride = sizeof(Vertex);
+		bindingDescriptions[0].inputRate = VK_VERTEX_INPUT_RATE_VERTEX;
+
+		return bindingDescriptions;
+	}
+
+	std::vector<VkVertexInputAttributeDescription> LveModel::Vertex::getAttributeDescriptions() {
+
+		std::vector<VkVertexInputAttributeDescription> attributeDescriptions(1);
+		attributeDescriptions[0].binding = 0;
+		attributeDescriptions[0].location = 0;
+		attributeDescriptions[0].format = VK_FORMAT_R32G32_SFLOAT;
+		attributeDescriptions[0].offset = 0;
+
+		return attributeDescriptions;
+	}
+
 } //namespace lve
