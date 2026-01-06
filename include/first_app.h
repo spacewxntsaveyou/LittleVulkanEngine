@@ -18,9 +18,21 @@ namespace lve {
 		static constexpr int WIDTH = 800;
 		static constexpr int HEIGHT = 600;
 
+		FirstApp();
+		~FirstApp();
+
+		FirstApp(const LveWindow&) = delete;
+		FirstApp& operator=(const LveWindow&) = delete;
+
 		void run();
 
-	private:
+	private: 
+
+		void createPipelineLayout();
+		void createPipeline();
+		void createCommandBuffers();
+		void drawDrame();
+
 			//Remember that variables are initialized from Top-Bottom and destroyed Bottom-Top
 		LveWindow lveWindow{ WIDTH, HEIGHT, "Le Vulkan"};
 		LveDevice lveDevice{ lveWindow };
