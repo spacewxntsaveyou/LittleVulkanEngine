@@ -21,8 +21,8 @@ namespace lve {
 		FirstApp();
 		~FirstApp();
 
-		FirstApp(const LveWindow&) = delete;
-		FirstApp& operator=(const LveWindow&) = delete;
+		FirstApp(const FirstApp&) = delete;
+		FirstApp& operator=(const FirstApp&) = delete;
 
 		void run();
 
