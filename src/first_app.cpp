@@ -62,7 +62,7 @@ namespace lve {
 		PipelineConfigInfo pipelineConfig{};
 
 		LvePipeline::defaultPipelineConfigInfo(pipelineConfig);
-		pipelineConfig.renderPass = LveSwapChain->getRenderPass();
+		pipelineConfig.renderPass = lveSwapChain->getRenderPass();
 		pipelineConfig.pipelineLayout = pipelineLayout;
 		lvePipeline = std::make_unique<LvePipeline>(lveDevice, "shaders/simple_shader.vert.spv", "shaders/simple_shader.frag.spv", pipelineConfig);
 
@@ -82,7 +82,7 @@ namespace lve {
 			lveSwapChain = std::make_unique<LveSwapChain>(lveDevice, extent);
 		}
 		else {
-			lveSwapChain = std::make_unique<LveSwapChain>(lveDevice, extent, std::move(lveSwapChain);
+			lveSwapChain = std::make_unique<LveSwapChain>(lveDevice, extent, std::move(lveSwapChain));
 			if (lveSwapChain->imageCount() != commandBuffers.size()) {
 				freeCommandBuffers();
 				createCommandBuffers();
@@ -95,7 +95,7 @@ namespace lve {
 
 	void FirstApp::createCommandBuffers() {
 	
-		commandBuffers.resize(LveSwapChain->imageCount());
+		commandBuffers.resize(lveSwapChain->imageCount());
 
 		VkCommandBufferAllocateInfo allocInfo{};
 		allocInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
@@ -126,12 +126,12 @@ namespace lve {
 		//Begin renderpass
 		VkRenderPassBeginInfo renderPassInfo{};
 		renderPassInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
-		renderPassInfo.renderPass = LveSwapChain->getRenderPass();
-		renderPassInfo.framebuffer = LveSwapChain->getFrameBuffer(imageIndex);
+		renderPassInfo.renderPass = lveSwapChain->getRenderPass();
+		renderPassInfo.framebuffer = lveSwapChain->getFrameBuffer(imageIndex);
 
 		//Defines area where the shader loads/stores
 		renderPassInfo.renderArea.offset = { 0, 0 };
-		renderPassInfo.renderArea.extent = LveSwapChain->getSwapChainExtent();
+		renderPassInfo.renderArea.extent = lveSwapChain->getSwapChainExtent();
 
 		std::array<VkClearValue, 2> clearValues{};
 		clearValues[0].color = { 0.1f, 0.1f, 0.1f, 1.0f };
@@ -145,7 +145,7 @@ namespace lve {
 		viewport.x = 0.0f;
 		viewport.y = 0.0f;
 		viewport.width = static_cast<float>(lveSwapChain->getSwapChainExtent().width);
-		viewport.width = static_cast<float>(lveSwapChain->getSwapChainExtent().height);
+		viewport.height = static_cast<float>(lveSwapChain->getSwapChainExtent().height);
 		viewport.minDepth = 0.0f;
 		viewport.maxDepth = 1.0f;
 		VkRect2D scissor{ {0, 0}, lveSwapChain->getSwapChainExtent() };
@@ -166,7 +166,7 @@ namespace lve {
 	void FirstApp::drawFrame() {
 	
 		uint32_t imageIndex;
-		auto result = LveSwapChain->acquireNextImage(&imageIndex);	//Fetches the index of the frame to be rendered next	//+Handles cpu sync
+		auto result = lveSwapChain->acquireNextImage(&imageIndex);	//Fetches the index of the frame to be rendered next	//+Handles cpu sync
 	
 		if (result == VK_ERROR_OUT_OF_DATE_KHR) { recreateSwapChain(); return; }
 
@@ -175,7 +175,7 @@ namespace lve {
 		}
 
 		recordCommandBuffer(imageIndex);
-		result = LveSwapChain->submitCommandBuffers(&commandBuffers[imageIndex], &imageIndex);
+		result = lveSwapChain->submitCommandBuffers(&commandBuffers[imageIndex], &imageIndex);
 		if (result == VK_ERROR_OUT_OF_DATE_KHR || result == VK_SUBOPTIMAL_KHR || lveWindow.wasWindowResized()) {
 			lveWindow.resetWindowResizedFlag();
 			recreateSwapChain();
