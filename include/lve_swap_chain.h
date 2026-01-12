@@ -6,6 +6,7 @@
 #include <vulkan/vulkan.h>
 
 // std 
+#include <memory>
 #include <string>
 #include <vector>
 
@@ -16,6 +17,7 @@ class LveSwapChain {
   static constexpr int MAX_FRAMES_IN_FLIGHT = 2;
 
   LveSwapChain(LveDevice &deviceRef, VkExtent2D windowExtent);
+  LveSwapChain(LveDevice& deviceRef, VkExtent2D windowExtent, std::shared_ptr<LveSwapChain> previous);  //If the old swapchain has compatible ressources, use them for the new swapchain      //Improves resizing behavior 
   ~LveSwapChain();
 
   LveSwapChain(const LveSwapChain &) = delete;
@@ -39,12 +41,13 @@ class LveSwapChain {
   VkResult submitCommandBuffers(const VkCommandBuffer *buffers, uint32_t *imageIndex);
 
  private:
-  void createSwapChain();
-  void createImageViews();
-  void createDepthResources();
-  void createRenderPass();
-  void createFramebuffers();
-  void createSyncObjects();
+    void init();
+    void createSwapChain();
+    void createImageViews();
+    void createDepthResources();
+    void createRenderPass();
+    void createFramebuffers();
+    void createSyncObjects();
 
   // Helper functions
   VkSurfaceFormatKHR chooseSwapSurfaceFormat(
@@ -69,6 +72,7 @@ class LveSwapChain {
   VkExtent2D windowExtent;
 
   VkSwapchainKHR swapChain;
+  std::shared_ptr<LveSwapChain> oldSwapChain;
 
   std::vector<VkSemaphore> imageAvailableSemaphores;
   std::vector<VkSemaphore> renderFinishedSemaphores;

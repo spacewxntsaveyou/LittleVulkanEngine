@@ -76,6 +76,8 @@ namespace lve {
 
 		vkDeviceWaitIdle(lveDevice.device());	//Waits current swapchain is no longer used b4 creating new swapchain
 		lveSwapChain = std::make_unique<LveSwapChain>(lveDevice, extent);
+		
+		// if render pass compatible do nothing else
 		createPipeline();
 
 	}
