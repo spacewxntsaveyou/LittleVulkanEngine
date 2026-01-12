@@ -23,7 +23,9 @@ namespace lve {
 		glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
 		glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE);
 
-		window = glfwCreateWindow(width, height, windowName.c_str(), nullptr, nullptr);
+		window = glfwCreateWindow(width, height, windowName.c_str(), nullptr, nullptr); //creates window
+		glfwSetWindowUserPointer(window, this);
+		glfwSetFramebufferSizeCallback(window, framebufferResizeCallback);
 	}
 
 	void LveWindow::createWindowSurface(VkInstance instance, VkSurfaceKHR* surface) {
