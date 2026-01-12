@@ -56,7 +56,9 @@ namespace lve {
 
 	void FirstApp::createPipeline() {
 	
-		auto pipelineConfig = LvePipeline::defaultPipelineConfigInfo(LveSwapChain->width(), LveSwapChain->height());
+		PipelineConfigInfo pipelineConfig{};
+
+		LvePipeline::defaultPipelineConfigInfo(pipelineConfig);
 		pipelineConfig.renderPass = LveSwapChain->getRenderPass();
 		pipelineConfig.pipelineLayout = pipelineLayout;
 		lvePipeline = std::make_unique<LvePipeline>(lveDevice, "shaders/simple_shader.vert.spv", "shaders/simple_shader.frag.spv", pipelineConfig);
@@ -119,6 +121,17 @@ namespace lve {
 		renderPassInfo.pClearValues = clearValues.data();
 
 		vkCmdBeginRenderPass(commandBuffers[imageIndex], &renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
+
+		VkViewport viewport{};
+		viewport.x = 0.0f;
+		viewport.y = 0.0f;
+		viewport.width = static_cast<float>(lveSwapChain->getSwapChainExtent().width);
+		viewport.width = static_cast<float>(lveSwapChain->getSwapChainExtent().height);
+		viewport.minDepth = 0.0f;
+		viewport.maxDepth = 1.0f;
+		VkRect2D scissor{ {0, 0}, lveSwapChain->getSwapChainExtent() };
+		vkCmdSetViewport(commandBuffers[imageIndex], 0, 1, &viewport);
+		vkCmdSetScissor(commandBuffers[imageIndex], 0, 1, &scissor);
 
 		lvePipeline->bind(commandBuffers[imageIndex]);
 		lveModel->bind(commandBuffers[imageIndex]);

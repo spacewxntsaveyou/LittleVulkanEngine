@@ -82,15 +82,6 @@ namespace lve {
 		vertexInputInfo.pVertexAttributeDescriptions = attributeDescriptions.data();
 		vertexInputInfo.pVertexBindingDescriptions = bindingDescriptions.data();
 
-		VkPipelineViewportStateCreateInfo viewportInfo {};
-
-		//Combines viewport and scissor
-		viewportInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_VIEWPORT_STATE_CREATE_INFO;
-		viewportInfo.viewportCount = 1;
-		viewportInfo.pViewports = &configInfo.viewport;
-		viewportInfo.scissorCount = 1;
-		viewportInfo.pScissors = &configInfo.scissor;
-
 		VkGraphicsPipelineCreateInfo pipelineInfo{};
 
 		//Uses the configs to create the graphicsPipeline object
@@ -101,12 +92,12 @@ namespace lve {
 		//Connect "pipelineCreateInfo" to "configInfo"	//Config is seperated from pipelineCreation
 		pipelineInfo.pVertexInputState = &vertexInputInfo;
 		pipelineInfo.pInputAssemblyState = &configInfo.inputAssemblyInfo;
-		pipelineInfo.pViewportState = &viewportInfo;
+		pipelineInfo.pViewportState = &configInfo.viewportInfo;
 		pipelineInfo.pRasterizationState = &configInfo.rasterizationInfo;
 		pipelineInfo.pMultisampleState = &configInfo.multisampleInfo;
 		pipelineInfo.pColorBlendState = &configInfo.colorBlendInfo;
 		pipelineInfo.pDepthStencilState = &configInfo.depthStencilInfo;
-		pipelineInfo.pDynamicState = nullptr;	//Optional setting used to config some pipeline functionality	//"lineWidth", or dynamic viewport without pipeline recreation
+		pipelineInfo.pDynamicState = &configInfo.dynamicStateInfo;	//Optional setting used to config some pipeline functionality	//"lineWidth", or dynamic viewport without pipeline recreation
 
 		//Adding indexes to createInfo
 		pipelineInfo.layout = configInfo.pipelineLayout;
@@ -141,25 +132,19 @@ namespace lve {
 
 	}
 
-	PipelineConfigInfo LvePipeline::defaultPipelineConfigInfo(uint32_t width, uint32_t height) {
+	void LvePipeline::defaultPipelineConfigInfo(PipelineConfigInfo& configInfo) {
 
-		PipelineConfigInfo configInfo{};
 			//First stage of pipeline	//takes a bunch of vertexes and groups them as geometry
 		configInfo.inputAssemblyInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO;
 		configInfo.inputAssemblyInfo.topology = VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST;	//tells what the vertexes group = to (triangle)
 		configInfo.inputAssemblyInfo.primitiveRestartEnable = VK_FALSE;
 
-		//Viewport describes the transformation between the pipeline output and target image	//Can squash the output
-		configInfo.viewport.x = 0.0f;
-		configInfo.viewport.y = 0.0f;
-		configInfo.viewport.width = static_cast<float>(width);
-		configInfo.viewport.height = static_cast<float>(height);
-		configInfo.viewport.minDepth = 0.0f;
-		configInfo.viewport.maxDepth = 1.0f;
-
-		//Scissor can cut instead of squashing
-		configInfo.scissor.offset = { 0, 0 };
-		configInfo.scissor.extent = { width, height };
+		//Combines viewport and scissor
+		configInfo.viewportInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_VIEWPORT_STATE_CREATE_INFO;
+		configInfo.viewportInfo.viewportCount = 1;
+		configInfo.viewportInfo.pViewports = nullptr;
+		configInfo.viewportInfo.scissorCount = 1;
+		configInfo.viewportInfo.pScissors = nullptr;
 
 		//Rasterization stage
 		configInfo.rasterizationInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_RASTERIZATION_STATE_CREATE_INFO;
@@ -185,8 +170,7 @@ namespace lve {
 
 		//ColorBlending controls how colors are combined in the FrameBuffer
 		configInfo.colorBlendAttachment.colorWriteMask =
-			VK_COLOR_COMPONENT_R_BIT | VK_COLOR_COMPONENT_G_BIT | VK_COLOR_COMPONENT_B_BIT |
-			VK_COLOR_COMPONENT_A_BIT;
+			VK_COLOR_COMPONENT_R_BIT | VK_COLOR_COMPONENT_G_BIT | VK_COLOR_COMPONENT_B_BIT | VK_COLOR_COMPONENT_A_BIT;
 		configInfo.colorBlendAttachment.blendEnable = VK_FALSE;
 		configInfo.colorBlendAttachment.srcColorBlendFactor = VK_BLEND_FACTOR_ONE;   // Optional
 		configInfo.colorBlendAttachment.dstColorBlendFactor = VK_BLEND_FACTOR_ZERO;  // Optional
@@ -217,7 +201,11 @@ namespace lve {
 		configInfo.depthStencilInfo.front = {};  // Optional
 		configInfo.depthStencilInfo.back = {};   // Optional
 
-		return configInfo;
+		configInfo.dynamicStateEnables = { VK_DYNAMIC_STATE_VIEWPORT, VK_DYNAMIC_STATE_SCISSOR };
+		configInfo.dynamicStateInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_DYNAMIC_STATE_CREATE_INFO;
+		configInfo.dynamicStateInfo.pDynamicStates = configInfo.dynamicStateEnables.data();
+		configInfo.dynamicStateInfo.dynamicStateCount = static_cast<uint32_t>(configInfo.dynamicStateEnables.size());
+		configInfo.dynamicStateInfo.flags = 0;
 	}
 
 } //namespace lve
