@@ -1,10 +1,20 @@
 #include "first_app.h"
 
+//Lib
+#define GLM_FORCE_RADIANS
+#define GLM_FORCE_DEPTH_ZERO_TO_ONE		//Uses correct orientation for vulkan (-1 -> 1)
+#include <glm/glm.hpp>
+
 //std
 #include <stdexcept>
 #include <array>
 
 namespace lve {
+
+	struct SimplePushConstantData {
+		glm::vec2 offset;
+		glm::vec3 color;
+	};	//declared in app because its Temporary
 
 	FirstApp::FirstApp() {
 
@@ -43,12 +53,17 @@ namespace lve {
 
 	void FirstApp::createPipelineLayout() {
 
+		VkPushConstantRange pushConstantRange{};
+		pushConstantRange.stageFlags = VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT;	//Signals we want access to push data in both Vertex/Fragment shaders
+		pushConstantRange.offset = 0;
+		pushConstantRange.size = sizeof(SimplePushConstantData);
+
 		VkPipelineLayoutCreateInfo pipelineLayoutInfo{};
 		pipelineLayoutInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
 		pipelineLayoutInfo.setLayoutCount = 0;
 		pipelineLayoutInfo.pSetLayouts = nullptr;	//can be used to pass data (ex. textures)
-		pipelineLayoutInfo.pushConstantRangeCount = 0;
-		pipelineLayoutInfo.pPushConstantRanges = nullptr;
+		pipelineLayoutInfo.pushConstantRangeCount = 1;
+		pipelineLayoutInfo.pPushConstantRanges = &pushConstantRange;
 		if (vkCreatePipelineLayout(lveDevice.device(), &pipelineLayoutInfo, nullptr, &pipelineLayout) != VK_SUCCESS) {
 			throw std::runtime_error("failed to create pipeline layout!");
 		}
@@ -154,7 +169,15 @@ namespace lve {
 
 		lvePipeline->bind(commandBuffers[imageIndex]);
 		lveModel->bind(commandBuffers[imageIndex]);
-		lveModel->draw(commandBuffers[imageIndex]);
+
+		for (int j = 0; j < 4; j++) {
+			SimplePushConstantData push{};
+			push.offset = { 0.0f, -0.4f +j * 0.25f };
+			push.color = { 0.0f, 0.0f, 0.2f + 0.2f * j };
+
+			vkCmdPushConstants(commandBuffers[imageIndex], pipelineLayout, VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT, 0, sizeof(SimplePushConstantData), &push);
+			lveModel->draw(commandBuffers[imageIndex]);
+		}
 
 		vkCmdEndRenderPass(commandBuffers[imageIndex]);
 		if (vkEndCommandBuffer(commandBuffers[imageIndex]) != VK_SUCCESS) {
