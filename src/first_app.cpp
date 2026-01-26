@@ -12,6 +12,7 @@
 namespace lve {
 
 	struct SimplePushConstantData {
+		glm::mat2 transform{1.f};
 		glm::vec2 offset;
 		alignas(16) glm::vec3 color;
 	};	//declared in app because its Temporary

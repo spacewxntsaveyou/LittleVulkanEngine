@@ -2,7 +2,7 @@
 
 layout (location = 0) out vec4 outColor;
 
-layout(push_constant) uniform Push {vec2 offset; vec3 color;} push;	//Order MUST match the "simple push" Struct
+layout(push_constant) uniform Push {mat2 transform; vec2 offset; vec3 color;} push;	//Order MUST match the "simple push" Struct
  
 void main() {
 
