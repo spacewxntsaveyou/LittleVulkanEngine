@@ -131,6 +131,9 @@ namespace lve {
 
 	void FirstApp::recordCommandBuffer(int imageIndex) {
 
+		static int frame = 0;
+		frame = (frame + 1) % 500;
+
 		VkCommandBufferBeginInfo beginInfo{};
 		beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
 
@@ -149,7 +152,7 @@ namespace lve {
 		renderPassInfo.renderArea.extent = lveSwapChain->getSwapChainExtent();
 
 		std::array<VkClearValue, 2> clearValues{};
-		clearValues[0].color = { 0.1f, 0.1f, 0.1f, 1.0f };
+		clearValues[0].color = { 0.01f, 0.01f, 0.01f, 1.0f };
 		clearValues[1].depthStencil = { 1.0f, 0 };
 		renderPassInfo.clearValueCount = static_cast<uint32_t>(clearValues.size());
 		renderPassInfo.pClearValues = clearValues.data();
@@ -172,7 +175,7 @@ namespace lve {
 
 		for (int j = 0; j < 4; j++) {
 			SimplePushConstantData push{};
-			push.offset = { 0.0f, -0.4f +j * 0.25f };
+			push.offset = { -0.5f + frame * 0.002f, -0.4f +j * 0.25f };
 			push.color = { 0.0f, 0.0f, 0.2f + 0.2f * j };
 
 			vkCmdPushConstants(commandBuffers[imageIndex], pipelineLayout, VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT, 0, sizeof(SimplePushConstantData), &push);
