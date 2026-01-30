@@ -24,12 +24,12 @@ namespace lve {
 		VkRenderPass getSwapChainRenderPass() const { return lveSwapChain->getRenderPass(); }
 		bool isFrameInProgress() const { return isFrameStarted; }
 
-		VkCommandBuffer getCurrentCommandBuffer() const { assert(isFrameStarted && "Cannot get command buffer when frame not in progress") return commandBuffers[currentImageIndex]; }
+		VkCommandBuffer getCurrentCommandBuffer() const { assert(isFrameStarted && "Cannot get command buffer when frame not in progress"); return commandBuffers[currentImageIndex]; }
 
 		VkCommandBuffer beginFrame();
 		void endFrame();
-		void beginSwapChainRenderPass(VkCommandBuffer commandBuffers);
-		void endSwapChainRenderPass(VkCommandBuffer commandBuffers);
+		void beginSwapChainRenderPass(VkCommandBuffer commandBuffer);
+		void endSwapChainRenderPass(VkCommandBuffer commandBuffer);
 
 
 	private:
