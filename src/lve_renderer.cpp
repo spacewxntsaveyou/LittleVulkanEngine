@@ -98,7 +98,7 @@ namespace lve {
 			lveWindow.resetWindowResizedFlag();
 			recreateSwapChain();
 		}
-		if (result != VK_SUCCESS) { throw std::runtime_error("failed to present swap chain image!"); }
+		else if (result != VK_SUCCESS) { throw std::runtime_error("failed to present swap chain image!"); }
 
 
 		isFrameStarted = false;

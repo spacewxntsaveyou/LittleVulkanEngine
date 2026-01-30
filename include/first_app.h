@@ -3,7 +3,7 @@
 #include"lve_window.h"
 #include"lve_pipeline.h"
 #include"lve_device.h"
-#include"lve_swap_chain.h"
+#include"lve_renderer.h"
 #include"lve_game_object.h"
 
 //std
@@ -32,20 +32,14 @@ namespace lve {
 		void loadGameObjects();
 		void createPipelineLayout();
 		void createPipeline();
-		void createCommandBuffers();
-		void freeCommandBuffers();
-		void drawFrame();
-		void recreateSwapChain();
-		void recordCommandBuffer(int imageIndex);
 		void renderGameObjects(VkCommandBuffer commandBuffer);
 
 			//Remember that variables are initialized from Top-Bottom and destroyed Bottom-Top
 		LveWindow lveWindow{ WIDTH, HEIGHT, "Le Vulkan"};
 		LveDevice lveDevice{ lveWindow };
-		std::unique_ptr<LveSwapChain> lveSwapChain;
+		LveRenderer lveRenderer{ lveWindow, lveDevice };
 		std::unique_ptr<LvePipeline> lvePipeline;	
 		VkPipelineLayout pipelineLayout;
-		std::vector<VkCommandBuffer> commandBuffers;
 		std::vector<LveGameObject> gameObjects;
 
 	};
