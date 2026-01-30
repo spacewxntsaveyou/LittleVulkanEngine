@@ -1,7 +1,6 @@
 #pragma once
 
 #include"lve_window.h"
-#include"lve_pipeline.h"
 #include"lve_device.h"
 #include"lve_renderer.h"
 #include"lve_game_object.h"
@@ -30,16 +29,11 @@ namespace lve {
 	private: 
 
 		void loadGameObjects();
-		void createPipelineLayout();
-		void createPipeline();
-		void renderGameObjects(VkCommandBuffer commandBuffer);
 
 			//Remember that variables are initialized from Top-Bottom and destroyed Bottom-Top
 		LveWindow lveWindow{ WIDTH, HEIGHT, "Le Vulkan"};
 		LveDevice lveDevice{ lveWindow };
 		LveRenderer lveRenderer{ lveWindow, lveDevice };
-		std::unique_ptr<LvePipeline> lvePipeline;	
-		VkPipelineLayout pipelineLayout;
 		std::vector<LveGameObject> gameObjects;
 
 	};
