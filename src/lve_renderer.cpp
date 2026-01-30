@@ -18,7 +18,6 @@ namespace lve {
 	void LveRenderer::recreateSwapChain() {
 
 		auto extent = lveWindow.getExtent();	//Gets current window size
-
 		while (extent.width == 0 || extent.height == 0) {
 			extent = lveWindow.getExtent();
 			glfwWaitEvents();
@@ -28,16 +27,20 @@ namespace lve {
 		if (lveSwapChain == nullptr) {
 			lveSwapChain = std::make_unique<LveSwapChain>(lveDevice, extent);
 		}
+
 		else {
-			lveSwapChain = std::make_unique<LveSwapChain>(lveDevice, extent, std::move(lveSwapChain));
+			std::shared_ptr<LveSwapChain> oldSwapChain = std::move(lveSwapChain);
+			lveSwapChain = std::make_unique<LveSwapChain>(lveDevice, extent, oldSwapChain);
+
+			if (!oldSwapChain->compareSwapFormats(*lveSwapChain.get())) {
+				throw std::runtime_error("Swap chain image(or depth) format has changed!");
+			}
+
 			if (lveSwapChain->imageCount() != commandBuffers.size()) {
 				freeCommandBuffers();
 				createCommandBuffers();
 			}
-		}
-		// if render pass compatible do nothing else
-		// createPipeline(); //Come back later
-
+		}	// if render pass compatible do nothing else
 	}
 
 	void LveRenderer::createCommandBuffers() {
