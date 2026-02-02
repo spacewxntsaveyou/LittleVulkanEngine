@@ -22,7 +22,7 @@ namespace lve {
             int lookDown = GLFW_KEY_DOWN;
 		};
 
-        void moveInPLaneXZ(GLFW* window, float dt, LveGameObject& game);    //dt stands for Delta-Time  //Gameloop timing
+        void moveInPLaneXZ(GLFWwindow* window, float dt, LveGameObject& gameObject);    //dt stands for Delta-Time  //Gameloop timing
 
         KeyMappings keys{};
         float moveSpeed{ 3.f };
