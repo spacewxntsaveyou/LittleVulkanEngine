@@ -1,12 +1,11 @@
 #include "keyboard_movement_controller.h"
-#include "lve_game_object.h"
 
 //std
 #include <limits>
 
 namespace lve {
 
-	void KeyboardMovementController::moveInPLaneXZ(GLFW* window, float dt, LveGameObject& game) {
+	void KeyboardMovementController::moveInPLaneXZ(GLFWwindow* window, float dt, LveGameObject& gameObject) {
 
 		glm::vec3 rotate{0};
 		if (glfwGetKey(window, keys.lookRight) == GLFW_PRESS) rotate.y += 1.f;
@@ -41,7 +40,7 @@ namespace lve {
 			gameObject.transform.translation += moveSpeed * dt * glm::normalize(moveDir);
 		}
 
-
+	
 	}
 
 }	//namespace lve
