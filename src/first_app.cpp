@@ -1,5 +1,6 @@
 #include "first_app.h"
 #include "simple_render_system.h"
+#include "lve_camera.h"
 
 //Lib
 #define GLM_FORCE_RADIANS
@@ -21,10 +22,15 @@ namespace lve {
 	void FirstApp::run() {
 
 		SimpleRenderSystem simpleRenderSystem{ lveDevice, lveRenderer.getSwapChainRenderPass() };
+        LveCamera camera{};
 
 		while (!lveWindow.shouldClose()) {
 
 			glfwPollEvents();
+
+            float aspect = lveRenderer.getAspectRatio();
+            camera.setOrthographicProjection(-aspect, aspect, -1, 1, -1, 1);
+
 			
 			if (auto commandBuffer = lveRenderer.beginFrame()) {
 
@@ -32,7 +38,7 @@ namespace lve {
 				//render shadow casting objects
 				//end offscreen shadow pass
 				lveRenderer.beginSwapChainRenderPass(commandBuffer);
-				simpleRenderSystem.renderGameObjects(commandBuffer, gameObjects);
+				simpleRenderSystem.renderGameObjects(commandBuffer, gameObjects, camera);
 				lveRenderer.endSwapChainRenderPass(commandBuffer);
 				lveRenderer.endFrame();
 
