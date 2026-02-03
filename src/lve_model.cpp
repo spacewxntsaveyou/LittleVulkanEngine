@@ -5,9 +5,10 @@
 
 namespace lve {
 
-	LveModel::LveModel(LveDevice& device, const std::vector<Vertex>& vertices) : lveDevice{device} {
+	LveModel::LveModel(LveDevice& device, const LveModel::Builder &builder) : lveDevice{device} {
 
-		createVertexBuffers(vertices);
+		createVertexBuffers(builder.vertices);
+		createIndexBuffers(builder.indices);
 
 	}
 	
@@ -16,9 +17,14 @@ namespace lve {
 		vkDestroyBuffer(lveDevice.device(), vertexBuffer, nullptr);
 		vkFreeMemory(lveDevice.device(), vertexBufferMemory, nullptr);
 
+		if (hasIndexBuffer) {
+			vkDestroyBuffer(lveDevice.device(), indexBuffer, nullptr);
+			vkFreeMemory(lveDevice.device(), indexBufferMemory, nullptr);
+		}
+
 	}
 
-	void LveModel::createVertexBuffers(const std::vector<Vertex>& vertices) {
+	void LveModel::createVertexBuffers(const std::vector<Vertex> &vertices) {
 
 		vertexCount = static_cast<uint32_t>(vertices.size());
 		assert(vertexCount >= 3 && "Vertex count must atleast be at 3");
@@ -32,7 +38,32 @@ namespace lve {
 
 	}
 
+	void LveModel::createIndexBuffers(const std::vector<uint32_t> &indices) {
+
+		indexCount = static_cast<uint32_t>(indices.size());
+		hasIndexBuffer = indexCount > 0;
+
+		if (!hasIndexBuffer) { return; }
+
+		VkDeviceSize bufferSize = sizeof(indices[0]) * indexCount;
+		lveDevice.createBuffer(bufferSize, VK_BUFFER_USAGE_INDEX_BUFFER_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, indexBuffer, indexBufferMemory);	//Tells vulkan the alloc. memory needs to be accessed by host (cpu)
+
+		void* data;
+		vkMapMemory(lveDevice.device(), indexBufferMemory, 0, bufferSize, 0, &data);	//Creates a region of host memory, mapped to device memory, sends data to point at the beggining of the mapped memory (in gpu)
+		memcpy(data, indices.data(), static_cast<size_t>(bufferSize));
+		vkUnmapMemory(lveDevice.device(), indexBufferMemory);
+
+	}
+
 	void LveModel::draw(VkCommandBuffer commandBuffer) {
+
+		if (hasIndexBuffer) {
+			vkCmdDrawIndexed(commandBuffer, vertexCount, 1, 0, 0, 0);
+		}
+		else {
+			vkCmdDraw(commandBuffer, vertexCount, 1, 0, 0);
+		}
+
 		vkCmdDraw(commandBuffer, vertexCount, 1, 0, 0);
 	}
 
@@ -41,6 +72,10 @@ namespace lve {
 		VkBuffer buffers[] = { vertexBuffer };
 		VkDeviceSize offsets[] = { 0 };
 		vkCmdBindVertexBuffers(commandBuffer, 0, 1, buffers, offsets);
+
+		if (hasIndexBuffer) {
+			vkCmdBindIndexBuffer(commandBuffer, indexBuffer, 0, VK_INDEX_TYPE_UINT32);
+		}
 
 	}
 

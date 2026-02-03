@@ -66,7 +66,10 @@ namespace lve {
 
     //Temporary helper function
     std::unique_ptr<LveModel> createCubeModel(LveDevice& device, glm::vec3 offset) {
-        std::vector<LveModel::Vertex> vertices{
+
+        LveModel::Builder modelBuilder{};
+
+       modelBuilder.vertices = {
 
             // left face (white)
             {{-.5f, -.5f, -.5f}, {.9f, .9f, .9f}},
@@ -115,12 +118,12 @@ namespace lve {
             {{-.5f, -.5f, -0.5f}, {.1f, .8f, .1f}},
             {{.5f, -.5f, -0.5f}, {.1f, .8f, .1f}},
             {{.5f, .5f, -0.5f}, {.1f, .8f, .1f}},
-
         };
-        for (auto& v : vertices) {
+
+        for (auto& v : modelBuilder.vertices) {
             v.position += offset;
         }
-        return std::make_unique<LveModel>(device, vertices);
+        return std::make_unique<LveModel>(device, modelBuilder);
     }
 
 	void FirstApp::loadGameObjects() {
