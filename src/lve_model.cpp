@@ -1,5 +1,10 @@
 #include "lve_model.h"
 
+//libs
+#define TINYOBJLOADER_IMPLEMENTATION	//Tells precompiler that only this file contains the implementation for tinyobj
+#include <tiny_obj_loader.h>
+
+
 //std
 #include <cassert>
 
