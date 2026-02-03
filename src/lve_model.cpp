@@ -21,7 +21,6 @@ namespace lve {
 			vkDestroyBuffer(lveDevice.device(), indexBuffer, nullptr);
 			vkFreeMemory(lveDevice.device(), indexBufferMemory, nullptr);
 		}
-
 	}
 
 	void LveModel::createVertexBuffers(const std::vector<Vertex> &vertices) {
@@ -29,12 +28,22 @@ namespace lve {
 		vertexCount = static_cast<uint32_t>(vertices.size());
 		assert(vertexCount >= 3 && "Vertex count must atleast be at 3");
 		VkDeviceSize bufferSize = sizeof(vertices[0]) * vertexCount;	
-		lveDevice.createBuffer(bufferSize, VK_BUFFER_USAGE_VERTEX_BUFFER_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, vertexBuffer, vertexBufferMemory);	//Tells vulkan the alloc. memory needs to be accessed by host (cpu)
+
+		VkBuffer stagingBuffer;
+		VkDeviceMemory stagingBufferMemory;
+
+		lveDevice.createBuffer(bufferSize, VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, stagingBuffer, stagingBufferMemory);	
 
 		void* data;
-		vkMapMemory(lveDevice.device(), vertexBufferMemory, 0, bufferSize, 0, &data);	//Creates a region of host memory, mapped to device memory, sends data to point at the beggining of the mapped memory (in gpu)
+		vkMapMemory(lveDevice.device(), stagingBufferMemory, 0, bufferSize, 0, &data);	//Creates a region of host memory, mapped to device memory, sends data to point at the beggining of the mapped memory (in gpu)
 		memcpy(data, vertices.data(), static_cast<size_t>(bufferSize));
-		vkUnmapMemory(lveDevice.device(), vertexBufferMemory);
+		vkUnmapMemory(lveDevice.device(), stagingBufferMemory);
+
+		lveDevice.createBuffer(bufferSize, VK_BUFFER_USAGE_VERTEX_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, vertexBuffer, vertexBufferMemory);
+
+		lveDevice.copyBuffer(stagingBuffer, vertexBuffer, bufferSize);
+		vkDestroyBuffer(lveDevice.device(), stagingBuffer, nullptr);
+		vkFreeMemory(lveDevice.device(), stagingBufferMemory, nullptr);
 
 	}
 
@@ -46,12 +55,21 @@ namespace lve {
 		if (!hasIndexBuffer) { return; }
 
 		VkDeviceSize bufferSize = sizeof(indices[0]) * indexCount;
-		lveDevice.createBuffer(bufferSize, VK_BUFFER_USAGE_INDEX_BUFFER_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, indexBuffer, indexBufferMemory);	//Tells vulkan the alloc. memory needs to be accessed by host (cpu)
+		VkBuffer stagingBuffer;
+		VkDeviceMemory stagingBufferMemory;
+
+		lveDevice.createBuffer(bufferSize, VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, stagingBuffer, stagingBufferMemory);
 
 		void* data;
-		vkMapMemory(lveDevice.device(), indexBufferMemory, 0, bufferSize, 0, &data);	//Creates a region of host memory, mapped to device memory, sends data to point at the beggining of the mapped memory (in gpu)
+		vkMapMemory(lveDevice.device(), stagingBufferMemory, 0, bufferSize, 0, &data);	//Creates a region of host memory, mapped to device memory, sends data to point at the beggining of the mapped memory (in gpu)
 		memcpy(data, indices.data(), static_cast<size_t>(bufferSize));
-		vkUnmapMemory(lveDevice.device(), indexBufferMemory);
+		vkUnmapMemory(lveDevice.device(), stagingBufferMemory);
+
+		lveDevice.createBuffer(bufferSize, VK_BUFFER_USAGE_INDEX_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, indexBuffer, indexBufferMemory);
+
+		lveDevice.copyBuffer(stagingBuffer, indexBuffer, bufferSize);
+		vkDestroyBuffer(lveDevice.device(), stagingBuffer, nullptr);
+		vkFreeMemory(lveDevice.device(), stagingBufferMemory, nullptr);
 
 	}
 
