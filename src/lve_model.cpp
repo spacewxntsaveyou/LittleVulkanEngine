@@ -58,13 +58,11 @@ namespace lve {
 	void LveModel::draw(VkCommandBuffer commandBuffer) {
 
 		if (hasIndexBuffer) {
-			vkCmdDrawIndexed(commandBuffer, vertexCount, 1, 0, 0, 0);
+			vkCmdDrawIndexed(commandBuffer, indexCount, 1, 0, 0, 0);
 		}
 		else {
 			vkCmdDraw(commandBuffer, vertexCount, 1, 0, 0);
 		}
-
-		vkCmdDraw(commandBuffer, vertexCount, 1, 0, 0);
 	}
 
 	void LveModel::bind(VkCommandBuffer commandBuffer) {
