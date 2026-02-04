@@ -11,7 +11,6 @@
 //std
 #include <cassert>
 #include <cstring>
-#include <iostream>
 #include <unordered_map>
 
 namespace std {
@@ -52,7 +51,6 @@ namespace lve {
 		Builder builder{};
 		builder.loadModel(filePath);
 
-		std::cout << "Vertex count: " << builder.vertices.size() <<'\n';
 		return std::make_unique<LveModel>(device, builder);
 	}
 
