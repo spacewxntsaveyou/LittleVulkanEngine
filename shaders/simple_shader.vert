@@ -13,7 +13,7 @@ mat4 transform; //projection * view * model
 mat4 modelMatrix;
 } push;	//Order MUST match the "simple push" Struct
 
-const vec3 DIRECTION_TO_LIGHT = normalize(vec3(1.0, -3.0, -1.0))
+const vec3 DIRECTION_TO_LIGHT = normalize(vec3(1.0, -3.0, -1.0));
 
 
 void main() {
