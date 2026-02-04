@@ -42,6 +42,10 @@ namespace lve {
             float frameTime = std::chrono::duration<float, std::chrono::seconds::period>(newTime - currentTime).count();
             currentTime = newTime;
 
+			//Limits camera mouvement while resizing occurs
+			float MAX_FRAMES_TIME = 120;
+			frameTime = glm::min(frameTime, MAX_FRAMES_TIME);	
+
             cameraController.moveInPLaneXZ(lveWindow.getGLFWwindow(), frameTime, viewerObject);
             camera.setViewYXZ(viewerObject.transform.translation, viewerObject.transform.rotation);
 
