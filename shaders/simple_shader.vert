@@ -14,6 +14,7 @@ mat4 modelMatrix;
 } push;	//Order MUST match the "simple push" Struct
 
 const vec3 DIRECTION_TO_LIGHT = normalize(vec3(1.0, -3.0, -1.0));
+const float AMBIENT = 0.02;
 
 
 void main() {
@@ -22,7 +23,7 @@ gl_Position = push.transform * vec4(position, 1.0);	//"1.0" = Homogeneous coordi
 
 //temporary: only works in certain scenarios
 vec3 normalWorldSpace = normalize(mat3(push.modelMatrix) * normal);
-float lightIntensity = max(dot(normalWorldSpace, DIRECTION_TO_LIGHT), 0);
+float lightIntensity = AMBIENT + max(dot(normalWorldSpace, DIRECTION_TO_LIGHT), 0);
 
 
 fragColor = lightIntensity * color;
