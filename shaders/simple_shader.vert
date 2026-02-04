@@ -21,16 +21,8 @@ void main() {
 
 gl_Position = push.transform * vec4(position, 1.0);	//"1.0" = Homogeneous coordinate
 
-//temporary: only works in certain scenarios
-//vec3 normalWorldSpace = normalize(mat3(push.modelMatrix) * normal);
-
-//Calculating the inverse in a shader can be expensive and should be avoided
-//Better option
-//mat3 modelMatrix = transpose(inverse(mat3(push.modelMatrix)));
-//vec3 normalWorldSpace = normalize(modelMatrix * normal);
 
 vec3 normalWorldSpace = normalize(mat3(push.normalMatrix) * normal);
-
 float lightIntensity = AMBIENT + max(dot(normalWorldSpace, DIRECTION_TO_LIGHT), 0);
 
 

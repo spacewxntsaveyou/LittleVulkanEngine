@@ -72,12 +72,27 @@ namespace lve {
 
 	void FirstApp::loadGameObjects() {
 
+		//std::shared_ptr<LveModel> lveModel = LveModel::createModelFromFile(lveDevice, "ressources/models/flat_vase.obj");
+        //auto gameObj = LveGameObject::createGameObject();
+		//gameObj.model = lveModel;
+		//gameObj.transform.translation = { .0f, .5f, 2.5f };
+		//gameObj.transform.scale = { 3.f, 1.5, 3.f };
+        //gameObjects.push_back(std::move(gameObj));
+
 		std::shared_ptr<LveModel> lveModel = LveModel::createModelFromFile(lveDevice, "ressources/models/flat_vase.obj");
-        auto gameObj = LveGameObject::createGameObject();
-		gameObj.model = lveModel;
-		gameObj.transform.translation = { .0f, .5f, 2.5f };
-		gameObj.transform.scale = { 3.f, 1.5, 3.f };
-        gameObjects.push_back(std::move(gameObj));
+		auto flatVase = LveGameObject::createGameObject();
+		flatVase.model = lveModel;
+		flatVase.transform.translation = { -.5f, .5f, 2.5f };
+		flatVase.transform.scale = { 3.f, 1.5, 3.f };
+		gameObjects.push_back(std::move(flatVase));
+
+		lveModel = LveModel::createModelFromFile(lveDevice, "ressources/models/smooth_vase.obj");
+		auto smoothVase = LveGameObject::createGameObject();
+		smoothVase.model = lveModel;
+		smoothVase.transform.translation = { .5f, .5f, 2.5f };
+		smoothVase.transform.scale = { 3.f, 1.5, 3.f };
+		gameObjects.push_back(std::move(smoothVase));
+
 
 	}
 
