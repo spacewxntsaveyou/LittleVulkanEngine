@@ -3,16 +3,16 @@
 #include "lve_camera.h"
 
 //lib
-#include <vulkan.h>
+#include <vulkan/vulkan.h>
 
 namespace lve {
 
 	struct FrameInfo {
 
-		int FrameIndex;
+		int frameIndex;
 		float frameTime;
 		VkCommandBuffer commandBuffer;
-		LveCamera &camera
+		LveCamera& camera;
 
 	};
 

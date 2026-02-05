@@ -69,17 +69,19 @@ namespace lve {
 			
 			if (auto commandBuffer = lveRenderer.beginFrame()) {
 
+				FrameInfo frameInfo{ frameIndex, frameTime, commandBuffer, camera };
+
 				int frameIndex = lveRenderer.getFrameIndex();
 
-				//update
+				//	update
 				GlobalUbo ubo{};
 				ubo.projectionView = camera.getProjection() * camera.getView();
 				globalUboBuffer.writeToIndex(&ubo, frameIndex);
 				globalUboBuffer.flush(frameIndex);
 
-				//render
+				//	render
 				lveRenderer.beginSwapChainRenderPass(commandBuffer);
-				simpleRenderSystem.renderGameObjects(commandBuffer, gameObjects, camera);
+				simpleRenderSystem.renderGameObjects(frameInfo, gameObjects);
 				lveRenderer.endSwapChainRenderPass(commandBuffer);
 				lveRenderer.endFrame();
 
