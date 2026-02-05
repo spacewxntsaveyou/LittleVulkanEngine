@@ -69,9 +69,8 @@ namespace lve {
 			
 			if (auto commandBuffer = lveRenderer.beginFrame()) {
 
-				FrameInfo frameInfo{ frameIndex, frameTime, commandBuffer, camera };
-
 				int frameIndex = lveRenderer.getFrameIndex();
+				FrameInfo frameInfo{ frameIndex, frameTime, commandBuffer, camera };
 
 				//	update
 				GlobalUbo ubo{};
