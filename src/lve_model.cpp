@@ -32,7 +32,6 @@ namespace lve {
 
 		createVertexBuffers(builder.vertices);
 		createIndexBuffers(builder.indices);
-
 	}
 	
 	LveModel::~LveModel() {}
