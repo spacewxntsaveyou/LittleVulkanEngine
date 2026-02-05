@@ -71,7 +71,7 @@ namespace lve {
 		if (!hasIndexBuffer) { return; }
 
 		VkDeviceSize bufferSize = sizeof(indices[0]) * indexCount;
-		uint32_t index = sizeof(indices[0]);
+		uint32_t indexSize = sizeof(indices[0]);
 
 		LveBuffer stagingBuffer{ lveDevice, indexSize, indexCount, VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT 
 		};
