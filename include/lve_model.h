@@ -1,6 +1,7 @@
 #pragma once
 
-#include"lve_device.h"
+#include "lve_device.h"
+#include "lve_buffer.h"
 
 //lib
 #define GLM_FORCE_RADIANS
@@ -61,14 +62,12 @@ namespace lve {
 		LveDevice& lveDevice;
 
 		//Vertices
-		VkBuffer vertexBuffer;
-		VkDeviceMemory vertexBufferMemory;
+		std::unique_ptr<LveBuffer> vertexBuffer;
 		uint32_t vertexCount;
 
 		//Indices
 		bool hasIndexBuffer = false;
-		VkBuffer indexBuffer;
-		VkDeviceMemory indexBufferMemory;
+		std::unique_ptr<LveBuffer> indexBuffer;
 		uint32_t indexCount;
 	};
 
