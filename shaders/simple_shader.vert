@@ -9,8 +9,11 @@ layout(location = 3) in vec2 uv;
 layout(location = 0) out vec3 fragColor;
 
 layout(set = 0, binding = 0) uniform GlobalUbo {	//set and binding numbers MUST match DescriptorSetLayout
+//must match UBO struct
 mat4 projectionViewMatrix;
-vec3 directionToLight;
+vec4 ambientLightColor;	
+vec3 lightPosition;
+vec4 lightColor;
 } ubo;
 
 layout(push_constant) uniform Push {
@@ -18,17 +21,20 @@ mat4 modelMatrix;
 mat4 normalMatrix;
 } push;	//Order MUST match the "simple push" Struct
 
-const float AMBIENT = 0.02;
-
 
 void main() {
 
-gl_Position = ubo.projectionViewMatrix * push.modelMatrix * vec4(position, 1.0);	//"1.0" = Homogeneous coordinate
-
+vec4 positionWorld = push.modelMatrix * vec4(position, 1.0); //"1.0" = Homogeneous coordinate
+gl_Position = ubo.projectionViewMatrix * positionWorld;
 
 vec3 normalWorldSpace = normalize(mat3(push.normalMatrix) * normal);
-float lightIntensity = AMBIENT + max(dot(normalWorldSpace, ubo.directionToLight), 0);
 
+vec3 directionToLight = ubo.lightPosition - positionWorld.xyz;
+float attenuation = 1.0 / dot(directionToLight, directionToLight);	//Distance squared	//! init before normalize()
 
-fragColor = lightIntensity * color;
+vec3 lightColor = ubo.lightColor.xyz * ubo.lightColor.w * attenuation;
+vec3 ambientLight = ubo.ambientLightColor.xyz * ubo.ambientLightColor.w;
+vec3 diffuseLight = lightColor * max(dot(normalWorldSpace, normalize(directionToLight)), 0); 
+
+fragColor = (diffuseLight + ambientLight) * color;
 }
