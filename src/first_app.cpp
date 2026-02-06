@@ -142,6 +142,13 @@ namespace lve {
 		gameObjects.push_back(std::move(smoothVase));
 
 
+		lveModel = LveModel::createModelFromFile(lveDevice, "ressources/models/quad.obj");
+		auto quad = LveGameObject::createGameObject();
+		quad.model = lveModel;
+		quad.transform.translation = { .0f, .5f, 0.f };
+		quad.transform.scale = { 3.f, 1., 3.f };
+		gameObjects.push_back(std::move(quad));
+
 	}
 
 } //namespace lve
