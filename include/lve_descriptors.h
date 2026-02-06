@@ -17,8 +17,8 @@ namespace lve {
 
             Builder& addBinding(
                 uint32_t binding,
-                VkDescriptorType descriptorType,
-                VkShaderStageFlags stageFlags,
+                VkDescriptorType descriptorType,    //Type of binding
+                VkShaderStageFlags stageFlags,  //Tells vulkan which shaderstage will interact with this binding
                 uint32_t count = 1);
             std::unique_ptr<LveDescriptorSetLayout> build() const;
 
@@ -49,9 +49,9 @@ namespace lve {
         public:
             Builder(LveDevice& lveDevice) : lveDevice{ lveDevice } {}
 
-            Builder& addPoolSize(VkDescriptorType descriptorType, uint32_t count);
+            Builder& addPoolSize(VkDescriptorType descriptorType, uint32_t count);  //says how many/types of descriptors to expect
             Builder& setPoolFlags(VkDescriptorPoolCreateFlags flags);
-            Builder& setMaxSets(uint32_t count);
+            Builder& setMaxSets(uint32_t count);                                    //Total number of descriptors that can be allocated from pool
             std::unique_ptr<LveDescriptorPool> build() const;
 
         private:
