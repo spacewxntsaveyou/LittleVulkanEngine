@@ -16,7 +16,7 @@ namespace lve {
 
 	public:
 
-		SimpleRenderSystem(LveDevice &device, VkRenderPass renderPass);
+		SimpleRenderSystem(LveDevice &device, VkRenderPass renderPass, VkDescriptorSetLayout globalsetLayout);
 		~SimpleRenderSystem();
 
 		SimpleRenderSystem(const SimpleRenderSystem&) = delete;
@@ -26,7 +26,7 @@ namespace lve {
 
 	private:
 
-		void createPipelineLayout();
+		void createPipelineLayout(VkDescriptorSetLayout globalsetLayout);
 		void createPipeline(VkRenderPass renderPass);
 
 		//Remember that variables are initialized from Top-Bottom and destroyed Bottom-Top
