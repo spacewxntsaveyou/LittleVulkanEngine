@@ -177,7 +177,7 @@ namespace lve {
     }
 
     bool LveDescriptorWriter::build(VkDescriptorSet& set) {
-        bool success = pool.allocateDescriptor(setLayout.getDescriptorSetLayout(), set);
+        bool success = pool.allocateDescriptorSet(setLayout.getDescriptorSetLayout(), set);
         if (!success) {
             return false;
         }
