@@ -96,7 +96,7 @@ namespace lve {
 			if (auto commandBuffer = lveRenderer.beginFrame()) {
 
 				int frameIndex = lveRenderer.getFrameIndex();
-				FrameInfo frameInfo{ frameIndex, frameTime, commandBuffer, camera, globalDescriptorSets[frameIndex]};
+				FrameInfo frameInfo{ frameIndex, frameTime, commandBuffer, camera, globalDescriptorSets[frameIndex], gameObjects};
 
 				//	update
 				GlobalUbo ubo{};
@@ -106,7 +106,7 @@ namespace lve {
 
 				//	render
 				lveRenderer.beginSwapChainRenderPass(commandBuffer);
-				simpleRenderSystem.renderGameObjects(frameInfo, gameObjects);
+				simpleRenderSystem.renderGameObjects(frameInfo);
 				lveRenderer.endSwapChainRenderPass(commandBuffer);
 				lveRenderer.endFrame();
 
@@ -125,21 +125,21 @@ namespace lve {
 		//gameObj.model = lveModel;
 		//gameObj.transform.translation = { .0f, .5f, 2.5f };
 		//gameObj.transform.scale = { 3.f, 1.5, 3.f };
-        //gameObjects.push_back(std::move(gameObj));
+        //gameObjects.emplace(gameObj.getId(),std::move(gameObj));
 
 		std::shared_ptr<LveModel> lveModel = LveModel::createModelFromFile(lveDevice, "ressources/models/flat_vase.obj");
 		auto flatVase = LveGameObject::createGameObject();
 		flatVase.model = lveModel;
 		flatVase.transform.translation = { -.5f, .5f, 0.f };
 		flatVase.transform.scale = { 3.f, 1.5, 3.f };
-		gameObjects.push_back(std::move(flatVase));
+		gameObjects.emplace(flatVase.getId(), std::move(flatVase));
 
 		lveModel = LveModel::createModelFromFile(lveDevice, "ressources/models/smooth_vase.obj");
 		auto smoothVase = LveGameObject::createGameObject();
 		smoothVase.model = lveModel;
 		smoothVase.transform.translation = { .5f, .5f, 0.f };
 		smoothVase.transform.scale = { 3.f, 1.5, 3.f };
-		gameObjects.push_back(std::move(smoothVase));
+		gameObjects.emplace(smoothVase.getId(), std::move(smoothVase));
 
 
 		lveModel = LveModel::createModelFromFile(lveDevice, "ressources/models/quad.obj");
@@ -147,7 +147,7 @@ namespace lve {
 		quad.model = lveModel;
 		quad.transform.translation = { .0f, .5f, 0.f };
 		quad.transform.scale = { 3.f, 1., 3.f };
-		gameObjects.push_back(std::move(quad));
+		gameObjects.emplace(quad.getId(), std::move(quad));
 
 	}
 

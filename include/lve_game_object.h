@@ -3,10 +3,11 @@
 #include "lve_model.h"
 
 //libs
-#include<glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/matrix_transform.hpp>
 
 //std
-#include<memory>
+#include <memory>
+#include <unordered_map>
 
 namespace lve {
 
@@ -25,6 +26,7 @@ namespace lve {
 
 	public:
 		using id_t = unsigned int;
+		using Map = std::unordered_map<id_t, LveGameObject>;
 
 		static LveGameObject createGameObject() {
 
