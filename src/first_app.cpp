@@ -91,7 +91,7 @@ namespace lve {
             camera.setViewYXZ(viewerObject.transform.translation, viewerObject.transform.rotation);
 
             float aspect = lveRenderer.getAspectRatio();
-           camera.setPerspectiveProjection(glm::radians(50.f), aspect, 0.1f, 10.f);    //Perspective projection
+           camera.setPerspectiveProjection(glm::radians(50.f), aspect, 0.1f, 100.f);    //Perspective projection
 			
 			if (auto commandBuffer = lveRenderer.beginFrame()) {
 
