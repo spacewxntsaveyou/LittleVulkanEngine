@@ -8,6 +8,8 @@
 
 namespace lve {
 
+#define MAX_LIGHTS 10
+
 	struct GlobalUbo {
 		glm::mat4 projection{ 1.f };
 		glm::mat4 view{ 1.f };
