@@ -1,8 +1,9 @@
 #include "first_app.h"
 #include "keyboard_movement_controller.h"
-#include "systems/simple_render_system.h"
 #include "lve_camera.h"
 #include "lve_buffer.h"
+#include "systems/simple_render_system.h"
+#include "systems/point_light_system.h"
 
 //Lib
 #define GLM_FORCE_RADIANS
@@ -64,8 +65,9 @@ namespace lve {
 				.build(globalDescriptorSets[i]);
 		}
 
-
+		//Init systems
 		SimpleRenderSystem simpleRenderSystem{ lveDevice, lveRenderer.getSwapChainRenderPass(), globalSetLayout->getDescriptorSetLayout()};
+		PointLightSystem pointLightSystem{ lveDevice, lveRenderer.getSwapChainRenderPass(), globalSetLayout->getDescriptorSetLayout() };
 
         LveCamera camera{};
 		camera.setViewTarget(glm::vec3(-1.f, -2.f, 2.f), glm::vec3(0.f, 0.f, 2.5f));
@@ -109,6 +111,7 @@ namespace lve {
 				//	render
 				lveRenderer.beginSwapChainRenderPass(commandBuffer);
 				simpleRenderSystem.renderGameObjects(frameInfo);
+				pointLightSystem.render(frameInfo);
 				lveRenderer.endSwapChainRenderPass(commandBuffer);
 				lveRenderer.endFrame();
 

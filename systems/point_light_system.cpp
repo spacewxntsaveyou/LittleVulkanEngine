@@ -49,6 +49,8 @@ namespace lve {
 		PipelineConfigInfo pipelineConfig{};
 
 		LvePipeline::defaultPipelineConfigInfo(pipelineConfig);
+		pipelineConfig.attributeDescriptions.clear();
+		pipelineConfig.bindingDescriptions.clear();
 		pipelineConfig.renderPass = renderPass;
 		pipelineConfig.pipelineLayout = pipelineLayout;
 		lvePipeline = std::make_unique<LvePipeline>(lveDevice, "shaders/point_light.vert.spv", "shaders/point_light.frag.spv", pipelineConfig);

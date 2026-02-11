@@ -73,8 +73,8 @@ namespace lve {
 		shaderStages[1].pSpecializationInfo = nullptr; //Mechanism to specialize shader functionality
 
 		//struct explains how to interpret Vertex buffer data	//Initial input in graphics pipeline
-		auto bindingDescriptions = LveModel::Vertex::getBindingDescriptions();
-		auto attributeDescriptions = LveModel::Vertex::getAttributeDescriptions();
+		auto& bindingDescriptions = configInfo.bindingDescriptions;
+		auto& attributeDescriptions = configInfo.attributeDescriptions;
 		VkPipelineVertexInputStateCreateInfo vertexInputInfo{};
 		vertexInputInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO;
 		vertexInputInfo.vertexAttributeDescriptionCount = static_cast<uint32_t>(attributeDescriptions.size());
@@ -206,6 +206,10 @@ namespace lve {
 		configInfo.dynamicStateInfo.pDynamicStates = configInfo.dynamicStateEnables.data();
 		configInfo.dynamicStateInfo.dynamicStateCount = static_cast<uint32_t>(configInfo.dynamicStateEnables.size());
 		configInfo.dynamicStateInfo.flags = 0;
+
+		configInfo.bindingDescriptions = LveModel::Vertex::getBindingDescriptions();
+		configInfo.attributeDescriptions = LveModel::Vertex::getAttributeDescriptions();
+
 	}
 
 } //namespace lve
