@@ -10,12 +10,17 @@ namespace lve {
 
 #define MAX_LIGHTS 10
 
+	struct PointLight {
+		glm::vec4 position{};	//ignore w
+		glm::vec4 color{};	//w is intensity
+	};
+
 	struct GlobalUbo {
 		glm::mat4 projection{ 1.f };
 		glm::mat4 view{ 1.f };
 		glm::vec4 ambientLightColor{ 1.f, 1.f, 1.f, .02f };	//4th is intensity
-		glm::vec3 lightPosition{ -1.f };
-		alignas (16) glm::vec4 lightColor{ 1.f };	//vec4 = (r, g, b, intensity)
+		PointLight pointLights[MAX_LIGHTS];
+		int numLights;
 	};
 
 	struct FrameInfo {
