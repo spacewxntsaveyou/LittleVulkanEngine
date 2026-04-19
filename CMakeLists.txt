@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.16)
+cmake_minimum_required(VERSION 4.1)
 project(lve  LANGUAGES C CXX)
 
 # 1. Set C/C++ standard
@@ -8,10 +8,16 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set (CMAKE_C_STANDARD 17)
 set (CMAKE_C_STANDARD_REQUIRED ON)
 
-# 2. Set MSVC runtime (after 'project()')
+# 2. Platform specific settings/flags
+
+# Set MSVC runtime
 if(MSVC)
     set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
-endif()
+endif ()
+# Linux specific compiler flags
+if (UNIX AND NOT APPLE)
+    #set(CMAKE_CXX_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
+endif ()
 
 # 3. Find Vulkan (MUST be called AFTER project)
 find_package(Vulkan REQUIRED) 
