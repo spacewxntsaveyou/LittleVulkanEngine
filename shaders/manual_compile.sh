@@ -1,7 +1,5 @@
-D:\2_Foundation\1_Libraries\0_VulkanSDK\Bin\glslc.exe simple_shader.vert -o D:\3_Projects\LittleVulkanEngine\out\build\x64-Debug\shaders\simple_shader.vert.spv
-D:\2_Foundation\1_Libraries\0_VulkanSDK\Bin\glslc.exe simple_shader.frag -o D:\3_Projects\LittleVulkanEngine\out\build\x64-Debug\shaders\simple_shader.frag.spv
+/mnt/work/1_foundations/1_Libraries/vulkanSDK/1.4.341.1/x86_64/bin/glslc simple_shader.vert -o /mnt/work/2_projects/LittleVulkanEngine/cmake-build-debug/shaders/simple_shader.vert.spv
+/mnt/work/1_foundations/1_Libraries/vulkanSDK/1.4.341.1/x86_64/bin/glslc simple_shader.frag -o /mnt/work/2_projects/LittleVulkanEngine/cmake-build-debug/shaders/simple_shader.frag.spv
 
-D:\2_Foundation\1_Libraries\0_VulkanSDK\Bin\glslc.exe point_light.vert -o D:\3_Projects\LittleVulkanEngine\out\build\x64-Debug\shaders\point_light.vert.spv
-D:\2_Foundation\1_Libraries\0_VulkanSDK\Bin\glslc.exe point_light.frag -o D:\3_Projects\LittleVulkanEngine\out\build\x64-Debug\shaders\point_light.frag.spv
-
-pause
+/mnt/work/1_foundations/1_Libraries/vulkanSDK/1.4.341.1/x86_64/bin/glslc point_light.vert -o /mnt/work/2_projects/LittleVulkanEngine/cmake-build-debug/shaders/point_light.vert.spv
+/mnt/work/1_foundations/1_Libraries/vulkanSDK/1.4.341.1/x86_64/bin/glslc point_light.frag -o /mnt/work/2_projects/LittleVulkanEngine/cmake-build-debug/shaders/point_light.frag.spv
