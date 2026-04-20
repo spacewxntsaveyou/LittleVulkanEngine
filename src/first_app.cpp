@@ -2,8 +2,8 @@
 #include "keyboard_movement_controller.h"
 #include "lve_camera.h"
 #include "lve_buffer.h"
-#include "systems/simple_render_system.h"
-#include "systems/point_light_system.h"
+#include "simple_render_system.h"
+#include "point_light_system.h"
 
 //Lib
 #define GLM_FORCE_RADIANS
