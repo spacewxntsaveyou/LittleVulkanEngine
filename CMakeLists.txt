@@ -65,15 +65,17 @@ COMMAND ${CMAKE_COMMAND} -E copy_directory
 file(GLOB_RECURSE SHADER_SOURCES "shaders/*.vert" "shaders/*.frag")
 
        foreach (SOURCE_FILE ${SHADER_SOURCES})
+           #Creates output filename (ie shader.vert.spv)
            get_filename_component(FILE_NAME ${SOURCE_FILE} NAME)
            set(OUTPUT_FILE "${CMAKE_CURRENT_BINARY_DIR}/shaders/${FILE_NAME}.spv")
-
+           #Triggers compilation
            add_custom_command(
                    OUTPUT ${OUTPUT_FILE}
                    COMMAND Vulkan::glslc "${SOURCE_FILE}" -o "${OUTPUT_FILE}"
                    DEPENDS ${SOURCE_FILE}
                    COMMENT "compiling ${SOURCE_FILE} to SPIR-V"
            )
+           #Collect all .spv into a list
            list (APPEND SPIRV_FILES ${OUTPUT_FILE})
        endforeach ()
 
