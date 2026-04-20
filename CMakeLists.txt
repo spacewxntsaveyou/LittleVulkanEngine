@@ -20,7 +20,7 @@ if (UNIX AND NOT APPLE)
 endif ()
 
 # 3. Find Vulkan (MUST be called AFTER project)
-find_package(Vulkan REQUIRED) 
+find_package(Vulkan REQUIRED COMPONENTS glslc)
 
 # 4. Library Flags
 set(GLFW_BUILD_DOCS OFF CACHE BOOL "" FORCE)
@@ -48,3 +48,34 @@ target_link_libraries("${CMAKE_PROJECT_NAME}" PRIVATE
     tinyobjloader
     Vulkan::Vulkan 
 )
+
+# 7. Create output directories and copies "ressources"
+file(MAKE_DIRECTORY ${CMAKE_BINARY_DIR}/shaders)
+file(MAKE_DIRECTORY ${CMAKE_BINARY_DIR}/ressources/models)
+
+add_custom_command(TARGET ${CMAKE_PROJECT_NAME} POST_BUILD
+COMMAND ${CMAKE_COMMAND} -E copy_directory
+        ${CMAKE_SOURCE_DIR}/ressources/models/
+        ${CMAKE_BINARY_DIR}/ressources/models/
+        COMMENT "Copying model files to Output directory"
+)
+
+
+# 8. Compile shaders
+file(GLOB_RECURSE SHADER_SOURCES "shaders/*.vert" "shaders/*.frag")
+
+       foreach (SOURCE_FILE ${SHADER_SOURCES})
+           get_filename_component(FILE_NAME ${SOURCE_FILE} NAME)
+           set(OUTPUT_FILE "${CMAKE_CURRENT_BINARY_DIR}/shaders/${FILE_NAME}.spv")
+
+           add_custom_command(
+                   OUTPUT ${OUTPUT_FILE}
+                   COMMAND Vulkan::glslc "${SOURCE_FILE}" -o "${OUTPUT_FILE}"
+                   DEPENDS ${SOURCE_FILE}
+                   COMMENT "compiling ${SOURCE_FILE} to SPIR-V"
+           )
+           list (APPEND SPIRV_FILES ${OUTPUT_FILE})
+       endforeach ()
+
+add_custom_target(CompileShaders ALL DEPENDS ${SPIRV_FILES})
+add_dependencies(lve CompileShaders)
