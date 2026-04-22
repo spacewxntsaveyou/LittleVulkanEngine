@@ -8,6 +8,7 @@
 
 //std
 #include <stdexcept>
+#include <map>
 #include <array>
 
 namespace lve {
@@ -56,6 +57,7 @@ namespace lve {
 		PipelineConfigInfo pipelineConfig{};
 
 		LvePipeline::defaultPipelineConfigInfo(pipelineConfig);
+		LvePipeline::enableAlphaBlending(pipelineConfig);
 		pipelineConfig.attributeDescriptions.clear();
 		pipelineConfig.bindingDescriptions.clear();
 		pipelineConfig.renderPass = renderPass;
@@ -76,7 +78,7 @@ namespace lve {
 
 			assert(lightIndex < MAX_LIGHTS && "Point lights exceed maximum specified");
 			//update light position
-			obj.transform.translation = glm::vec3(rotateLight * glm::vec4(obj.transform.translation, 1.f));
+		//	obj.transform.translation = glm::vec3(rotateLight * glm::vec4(obj.transform.translation, 1.f));
 
 
 			//Copy light to UBO
@@ -90,6 +92,20 @@ namespace lve {
 
 	void PointLightSystem::render(FrameInfo& frameInfo) {
 
+		//sort lights
+		std::map<float, LveGameObject::id_t> sorted;
+		for (auto& kv : frameInfo.gameObjects)
+		{
+			auto& obj = kv.second;
+			if (obj.pointLight == nullptr) continue;
+
+			//calculate distance
+			auto offset = frameInfo.camera.getPosition() - obj.transform.translation;
+			float disSquared = glm::dot(offset, offset);
+			sorted[disSquared] = obj.getId();
+		}
+
+
 		lvePipeline->bind(frameInfo.commandBuffer);
 
 		//Binds descriptor Sets to the pipeline
@@ -102,9 +118,10 @@ namespace lve {
 			0, nullptr	//Used for dynamic offsets
 		);
 
-		for (auto& kv : frameInfo.gameObjects) {
-			auto& obj = kv.second;
-			if (obj.pointLight == nullptr) continue;
+		//iterate through sorted lights in reverse order
+		for (auto it = sorted.rbegin(); it != sorted.rend(); ++it) {
+			//use game obj id to find light object
+			auto& obj = frameInfo.gameObjects.at(it->second);
 		
 			PointLightPushConstants push{};
 			push.position = glm::vec4(obj.transform.translation, 1.f);

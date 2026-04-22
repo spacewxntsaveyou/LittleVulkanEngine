@@ -25,12 +25,13 @@ vec4 color;
 float radius;
 } push;
 
+const float M_PI = 3.1415926538;
 
 void main() {
 
 float dis = sqrt(dot(fragOffsets, fragOffsets));
 if (dis >= 1.0) { discard; }	//Throws away fragment then returns
 
-outColor = vec4(push.color.xyz, 1.0);
+outColor = vec4(push.color.xyz, 0.5 * (cos(dis * M_PI) + 1.0));
 
 }
