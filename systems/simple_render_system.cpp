@@ -17,9 +17,9 @@ namespace lve {
 		glm::mat4 normalMatrix{ 1.f };
 	};
 
-	SimpleRenderSystem::SimpleRenderSystem(LveDevice& device, VkRenderPass renderPass, VkDescriptorSetLayout globalsetLayout) : lveDevice{device} {
+	SimpleRenderSystem::SimpleRenderSystem(LveDevice& device, VkRenderPass renderPass, VkDescriptorSetLayout globalSetLayout) : lveDevice{device} {
 
-		createPipelineLayout(globalsetLayout);
+		createPipelineLayout(globalSetLayout);
 		createPipeline(renderPass);
 	}
 
@@ -27,14 +27,14 @@ namespace lve {
 		vkDestroyPipelineLayout(lveDevice.device(), pipelineLayout, nullptr);
 	}
 
-	void SimpleRenderSystem::createPipelineLayout(VkDescriptorSetLayout globalsetLayout) {
+	void SimpleRenderSystem::createPipelineLayout(VkDescriptorSetLayout globalSetLayout) {
 
 		VkPushConstantRange pushConstantRange{};
 		pushConstantRange.stageFlags = VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT;	//Signals we want access to push data in both Vertex/Fragment shaders
 		pushConstantRange.offset = 0;
 		pushConstantRange.size = sizeof(SimplePushConstantData);
 
-		std::vector<VkDescriptorSetLayout> descriptorSetLayouts{ globalsetLayout };
+		std::vector<VkDescriptorSetLayout> descriptorSetLayouts{ globalSetLayout };
 
 		VkPipelineLayoutCreateInfo pipelineLayoutInfo{};
 		pipelineLayoutInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;

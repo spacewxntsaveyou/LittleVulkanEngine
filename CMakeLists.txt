@@ -73,7 +73,7 @@ file(GLOB_RECURSE SHADER_SOURCES "shaders/*.vert" "shaders/*.frag")
                    OUTPUT ${OUTPUT_FILE}
                    COMMAND Vulkan::glslc "${SOURCE_FILE}" -o "${OUTPUT_FILE}"
                    DEPENDS ${SOURCE_FILE}
-                   COMMENT "compiling ${SOURCE_FILE} to SPIR-V"
+                   COMMENT "Compiling ${SOURCE_FILE} to SPIR-V"
            )
            #Collect all .spv into a list
            list (APPEND SPIRV_FILES ${OUTPUT_FILE})

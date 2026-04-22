@@ -29,14 +29,14 @@ namespace lve {
 		vkDestroyPipelineLayout(lveDevice.device(), pipelineLayout, nullptr);
 	}
 
-	void PointLightSystem::createPipelineLayout(VkDescriptorSetLayout globalsetLayout) {
+	void PointLightSystem::createPipelineLayout(VkDescriptorSetLayout globalSetLayout) {
 
 		VkPushConstantRange pushConstantRange{};
 		pushConstantRange.stageFlags = VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT;	//Signals we want access to push data in both Vertex/Fragment shaders
 		pushConstantRange.offset = 0;
 		pushConstantRange.size = sizeof(PointLightPushConstants);
 
-		std::vector<VkDescriptorSetLayout> descriptorSetLayouts{ globalsetLayout };
+		std::vector<VkDescriptorSetLayout> descriptorSetLayouts{ globalSetLayout };
 
 		VkPipelineLayoutCreateInfo pipelineLayoutInfo{};
 		pipelineLayoutInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;

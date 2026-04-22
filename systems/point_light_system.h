@@ -27,7 +27,7 @@ namespace lve {
 
 	private:
 
-		void createPipelineLayout(VkDescriptorSetLayout globalsetLayout);
+		void createPipelineLayout(VkDescriptorSetLayout globalSetLayout);
 		void createPipeline(VkRenderPass renderPass);
 
 		//Remember that variables are initialized from Top-Bottom and destroyed Bottom-Top
