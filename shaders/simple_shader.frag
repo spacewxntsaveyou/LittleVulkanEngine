@@ -57,7 +57,7 @@ for (int i = 0; i < ubo.numLights; i++) {
 	blinnTerm = clamp(blinnTerm, 0, 1);
 	blinnTerm = pow(blinnTerm, 512.0); //higher values = sharper highlight
 	specularLight += intensity * blinnTerm;
-	//specularLight += light.color.xyz * attenuation * blinnTerm;
+
 }
 
 outColor = vec4(diffuseLight * fragColor + specularLight * fragColor, 1.0);
